@@ -6,11 +6,11 @@ import time
 from ultralytics import YOLO
 import pydirectinput
 
-# Detect if CUDA is available, else fallback to CPU
+# Detect CUDA availability
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-print(f"✅ Using device: {device.upper()}")
+print(f"✅ Model loaded on {device.upper()}")
 
-# Load YOLO model and move to GPU if available
+# Load YOLO model onto CUDA
 model = YOLO(r"C:\Disk D\foldar nou\best.pt").to(device)
 
 is_paused = False
@@ -22,14 +22,17 @@ def capture_screen():
 
 def process_frame(frame):
     """Processes a frame using YOLO and returns detected object coordinates."""
-    
+
     # Convert NumPy array (HWC) to PyTorch tensor (BCHW) and move to CUDA
     frame_tensor = torch.from_numpy(frame).permute(2, 0, 1).unsqueeze(0).to(device).float()
 
-    # Resize image to (640, 640), ensuring it's a multiple of 32
+    # Normalize pixel values (0 to 1)
+    frame_tensor /= 255.0
+
+    # Resize to (640, 640) using bilinear interpolation
     frame_tensor = torch.nn.functional.interpolate(frame_tensor, size=(640, 640), mode="bilinear", align_corners=False)
 
-    # Run YOLO object detection on GPU
+    # Run YOLO object detection
     results = model(frame_tensor)
 
     detected_notes = []
