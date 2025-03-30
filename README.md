@@ -6,5 +6,5 @@ So how to install :
 Step 1 : install pycharm
 Step 2 : install python 
 Step 3 : install in powershell in project of f.py script using - pip install ultralytics torch pyautogui pydirectinput keyboard numpy
-Step 4 : install rythia
-Step 5 : 
+Step 4 : change where is the model aka best.pt 
+Step 5 : Well done it if work
